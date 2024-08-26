@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Translator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <h1>English to Indian Regional Languages Translator</h1>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="text">
+        <h2>Translator: एक अनुवादक</h2>
+        <p>Our website allows you to translate English text into various Indian regional languages.</p>
+      </div>
+      <img src="logo.png" alt="LOGO" height="220" width="220" class="logo-right">
+    </section>
+
+
+
+    <div class="container">
+      <div class="translator_property">
+        <div class="from_language">
+            <label for="fromLanguageSelect"><b>Step 1: Select the language to translate from:</b></label>
+            <select id="fromLanguageSelect" name="fromLanguage">
+              <option value="en-GB">English</option>
+            </select>
+        </div>    
+      </div>
+
+
+
+      <div class="translator_property">
+        <div class="to_language">
+         <label for="toLanguageSelect"><b>Step 2: Select the Indian Language to Translate to:</b></label>
+         <select id="toLanguageSelect" name="toLanguage">
+           <option value="" selected disabled>Select Language</option>
+         </select>
+        </div>
+      </div>
+
+          <div class="write_box">
+            <div class="Property_from">
+              <textarea rows="6" class="fromText" placeholder="Enter English text to translate"></textarea>
+              <div class="icons">
+                <span class="bx bx-volume-full"></span>
+              </div>  
+            </div>
+          
+            <div class="Property_trans">
+              <textarea rows="6" class="toTranslate" placeholder="Translated Text will appear here"></textarea>
+              <div class="icons">
+                <span class="bx bx-volume-full"></span>
+              </div>  
+            </div>
+          </div>
+
+    <section class="features">
+      <h2>Key Features</h2>
+      <ul>
+        <li>Supports multiple Indian regional languages</li>
+        <li>Simple and user-friendly interface</li>
+        <li>Instant translation results</li>
+      </ul>
+    </section>
+
+    <section class="about">
+      <h2>About Our Project</h2>
+      <p>This website is created to help people translate English text into various Indian regional languages.</p> 
+      <p>Our goal is to make language accessibility more convenient for everyone.</p>
+    </section>
+
+  </main>
+
+
+
+  
+
+  <script src="./language.js"></script>
+
+  <script src="./main.js"></script>
+
+</body>
+
+</html>
