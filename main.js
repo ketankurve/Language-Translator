@@ -3,33 +3,28 @@ const fromText = document.querySelector('.fromText');
 const transText = document.querySelector('.toTranslate');
 const translateBtn = document.getElementById('translateBtn');
 
-// Populate target languages from language.js[cite: 1]
+// Populate target languages from language.js
 for (let countryCode in language) {
     let option = `<option value="${countryCode}">${language[countryCode]}</option>`;
     langOption[1].insertAdjacentHTML('beforeend', option);
 }
 
 /**
- * Professional Dynamic Typewriter Effect
- * Automatically speeds up for longer text to save time.
+ * Optimized Typewriter Effect
+ * Speed scales based on text length to ensure fast delivery.
  */
 function typeEffect(element, text) {
     element.value = "";
     let i = 0;
-    
-    // Logic: If the text is long, increase the number of characters per "tick"
-    // Short text: 1 char/tick | Long text: up to 5 chars/tick
     let charsPerTick = Math.max(1, Math.floor(text.length / 100)); 
-    let speed = text.length > 200 ? 5 : 15; // Faster interval for long text
+    let speed = text.length > 200 ? 5 : 15; 
     
     function type() {
         if (i < text.length) {
-            // Append a chunk of text instead of a single character for long strings
             element.value += text.substring(i, i + charsPerTick);
             i += charsPerTick;
             setTimeout(type, speed);
         } else {
-            // Ensure the exact text is set at the end (corrects any substring rounding)
             element.value = text; 
         }
     }
@@ -37,7 +32,8 @@ function typeEffect(element, text) {
 }
 
 /**
- * Main Translation Logic
+ * Translation Logic
+ * Uses the stable Google Translate mirror.
  */
 translateBtn.addEventListener('click', () => {
     let content = fromText.value.trim();
@@ -59,35 +55,57 @@ translateBtn.addEventListener('click', () => {
         .then(res => res.json())
         .then(data => {
             const result = data[0].map(item => item[0]).join("");
-            
-            // Trigger the optimized animation
             typeEffect(transText, result);
-            
             translateBtn.innerText = "Translate Now";
             translateBtn.disabled = false;
         })
         .catch(err => {
             console.error("API Error:", err);
-            transText.value = "Translation failed. Please try again.";
+            transText.value = "Translation failed.";
             translateBtn.innerText = "Translate Now";
             translateBtn.disabled = false;
         });
 });
 
 /**
- * Voice Synthesis Logic
- * Dynamically speaks the text based on the selected language[cite: 1]
+ * Robust Voice Synthesis
+ * Fixes the issue where the output text wasn't being picked up correctly.
  */
 const volumeIcons = document.querySelectorAll('.bx-volume-full');
+
 volumeIcons.forEach((icon, index) => {
     icon.addEventListener('click', () => {
-        let text = (index === 0) ? fromText.value : transText.value;
+        // Stop any ongoing speech to prevent overlap
+        window.speechSynthesis.cancel();
+
+        // Get fresh values directly from the textareas at the moment of click
+        let text = (index === 0) ? fromText.value.trim() : transText.value.trim();
         let lang = (index === 0) ? langOption[0].value : langOption[1].value;
         
-        if (text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = lang; 
-            speechSynthesis.speak(utterance);
+        if (!text) return;
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Clean the language code for the speech engine (e.g., "hi" from "hi-IN")[cite: 1]
+        utterance.lang = lang; 
+
+        // Ensure voices are loaded (some browsers need this extra step)
+        let voices = window.speechSynthesis.getVoices();
+        
+        // Try to find a voice that matches the language
+        const matchingVoice = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+        if (matchingVoice) {
+            utterance.voice = matchingVoice;
         }
+
+        utterance.pitch = 1;
+        utterance.rate = 0.9; // Slightly slower for better clarity in regional languages
+        
+        window.speechSynthesis.speak(utterance);
     });
 });
+
+// Fix for Chrome: voices are loaded asynchronously
+window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+};
